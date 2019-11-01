@@ -6,6 +6,7 @@
 package sofengg;
 
 import java.math.BigDecimal;
+import java.time.*;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,7 +27,7 @@ public class SQLiteTransactionManager implements DBTransactionManager{
     String query;
     Connection conn = SQLiteConnect.getConnection();
     ResultSet rs;
-    private ArrayList<Transaction> transactionList;
+    ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
     
     @Override
     public List<Transaction> viewTransactions() {
@@ -38,8 +39,27 @@ public class SQLiteTransactionManager implements DBTransactionManager{
                         
             if(st.executeUpdate() > 0)
             {
-                System.out.println("Query successful");
+                int i = 0;
                 rs = st.executeQuery(query);
+                
+                while(rs.next()){
+                    //name
+                    String name = rs.getString(1);
+                    //convert string date to LocalDate
+                    String localDate = rs.getString(2);
+                    Instant instant = Instant.parse(localDate);
+                    LocalDateTime dateTime = LocalDateTime.ofInstant(instant, ZoneId.of(ZoneOffset.UTC.getId()));
+                    LocalDate date = dateTime.toLocalDate();
+                    //haircut type
+                    String haircut = rs.getString(3);
+                    //amount paid
+                    BigDecimal amount = rs.getBigDecimal(4);
+                    
+                    Transaction tr = new Transaction(date, name, haircut, amount);
+                    //add the information to an array list
+                    transactionList.add(tr);
+                    i++;
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(SQLiteTransactionManager.class.getName()).log(Level.SEVERE, null, ex);

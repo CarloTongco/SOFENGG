@@ -18,11 +18,11 @@ public class Transaction {
     private BigDecimal amount;
     private String haircut;
     
-    public Transaction(String name, LocalDate date, BigDecimal amount, String haircut){
-        this.name = name;
+    public Transaction(LocalDate date, String name, String haircut, BigDecimal amount){
         this.date = date;
-        this.amount = amount;
+        this.name = name;
         this.haircut = haircut;
+        this.amount = amount;
     }
     
     public void setName(String name){
