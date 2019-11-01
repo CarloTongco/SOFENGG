@@ -6,9 +6,15 @@
 package sofengg;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -16,9 +22,29 @@ import java.util.List;
  */
 public class SQLiteTransactionManager implements DBTransactionManager{
 
+    PreparedStatement st;
+    String query;
+    Connection conn = SQLiteConnect.getConnection();
+    ResultSet rs;
+    private ArrayList<Transaction> transactionList;
+    
     @Override
     public List<Transaction> viewTransactions() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        try {
+            st = conn.prepareStatement(query);
+            
+            query = "SELECT * FROM `Transactions`";
+                        
+            if(st.executeUpdate() > 0)
+            {
+                System.out.println("Query successful");
+                rs = st.executeQuery(query);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLiteTransactionManager.class.getName()).log(Level.SEVERE, null, ex);
+        }            
+        return transactionList;
     }
 
     @Override

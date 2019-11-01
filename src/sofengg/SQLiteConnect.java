@@ -24,7 +24,7 @@ public class SQLiteConnect {
         if(conn == null){
             try {
                 // db parameters
-                String url = "jdbc:sqlite:C:/sqlite/db/chinook.db";
+                String url = "jdbc:sqlite:C:/sqlite/db/sofengg.db";
                 // create a connection to the database
                 conn = DriverManager.getConnection(url);
             
@@ -43,9 +43,5 @@ public class SQLiteConnect {
             }
         }
         return conn;
-    }
-    
-    public static void main(String args[]){
-        getConnection();
     }
 }
