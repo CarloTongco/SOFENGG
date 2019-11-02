@@ -13,10 +13,10 @@ import java.time.LocalDate;
  * @author user
  */
 public class Transaction {
-    private String name;
     private LocalDate date;
-    private BigDecimal amount;
+    private String name;
     private String haircut;
+    private BigDecimal amount;
     
     public Transaction(LocalDate date, String name, String haircut, BigDecimal amount){
         this.date = date;

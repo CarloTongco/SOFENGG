@@ -27,39 +27,34 @@ public class SQLiteTransactionManager implements DBTransactionManager{
     String query;
     Connection conn = SQLiteConnect.getConnection();
     ResultSet rs;
-    ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
+    ArrayList<Transaction> transactionList = new ArrayList<>();
     
     @Override
     public List<Transaction> viewTransactions() {
         
         try {
-            st = conn.prepareStatement(query);
             
             query = "SELECT * FROM `Transactions`";
-                        
-            if(st.executeUpdate() > 0)
-            {
-                int i = 0;
-                rs = st.executeQuery(query);
+            st = conn.prepareStatement(query);
+            
+            rs = st.executeQuery();
                 
-                while(rs.next()){
-                    //name
-                    String name = rs.getString(1);
-                    //convert string date to LocalDate
-                    String localDate = rs.getString(2);
-                    Instant instant = Instant.parse(localDate);
-                    LocalDateTime dateTime = LocalDateTime.ofInstant(instant, ZoneId.of(ZoneOffset.UTC.getId()));
-                    LocalDate date = dateTime.toLocalDate();
-                    //haircut type
-                    String haircut = rs.getString(3);
-                    //amount paid
-                    BigDecimal amount = rs.getBigDecimal(4);
+            while(rs.next()){
+                //convert string date to LocalDate
+                String localDate = rs.getString(2);
+                Instant instant = Instant.parse(localDate);
+                LocalDateTime dateTime = LocalDateTime.ofInstant(instant, ZoneId.of(ZoneOffset.UTC.getId()));
+                LocalDate date = dateTime.toLocalDate();
+                //name
+                String name = rs.getString(3);
+                //haircut type
+                String haircut = rs.getString(4);
+                //amount paid
+                BigDecimal amount = rs.getBigDecimal(5);
                     
-                    Transaction tr = new Transaction(date, name, haircut, amount);
-                    //add the information to an array list
-                    transactionList.add(tr);
-                    i++;
-                }
+                Transaction tr = new Transaction(date, name, haircut, amount);
+                //add the information to an array list
+                transactionList.add(tr);
             }
         } catch (SQLException ex) {
             Logger.getLogger(SQLiteTransactionManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -86,5 +81,4 @@ public class SQLiteTransactionManager implements DBTransactionManager{
     public BigDecimal getMonthlySales(int month, int year) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 }
