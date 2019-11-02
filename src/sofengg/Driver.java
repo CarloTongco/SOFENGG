@@ -1,7 +1,6 @@
 package sofengg;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -18,13 +17,14 @@ public class Driver {
     public static void main(String[] args) {
         Connection conn = SQLiteConnect.getConnection();
         SQLiteTransactionManager sql = new SQLiteTransactionManager();
-        ArrayList<Transaction> tr = new ArrayList<>();
-
-        tr = (ArrayList<Transaction>) sql.viewTransactions();    
+        
+        List<Transaction> tr = sql.viewTransactions();    
         
         for(int i=0; i< tr.size(); i++){
-            System.out.println(tr.get(i));
+            System.out.print(tr.get(i).getDate() + " ");
+            System.out.print(tr.get(i).getName() + " ");
+            System.out.print(tr.get(i).getHaircut() + " ");
+            System.out.println(tr.get(i).getAmount());
         }
-        
     }
 }
