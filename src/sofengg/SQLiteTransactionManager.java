@@ -13,6 +13,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.format.*;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,7 +75,23 @@ public class SQLiteTransactionManager implements DBTransactionManager{
 
     @Override
     public void addTransaction(Transaction t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            //gets the current size of the elements in the arraylist then adds 1 so the added transaction will be put at the bottom of the list
+            int id = transactionList.size() + 1;
+            
+            //converts the current date and time (LocalDateTime) format into a pattern readable by ViewTransactions()
+            LocalDateTime localdatetime = LocalDateTime.now();  
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            String formatDateTime = localdatetime.format(format);
+            
+            query = "INSERT INTO 'Transactions' (id, Date, Name, Haircut, Amount) VALUES('"+id+"', '"+formatDateTime+"', '"+t.getName()+"', '"+t.getHaircut()+"', '"+t.getAmount()+"')";
+            st = conn.prepareStatement(query);
+            
+            st.executeUpdate();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLiteTransactionManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
