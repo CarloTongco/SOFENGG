@@ -77,15 +77,13 @@ public class SQLiteTransactionManager implements DBTransactionManager{
     @Override
     public void addTransaction(Transaction t) {
         try {
-            //gets the current size of the elements in the arraylist then adds 1 so the added transaction will be put at the bottom of the list
-            int id = transactionList.size() + 1;
-            
+           
             //converts the current date and time (LocalDateTime) format into a pattern readable by ViewTransactions()
             LocalDateTime localdatetime = LocalDateTime.now();  
             DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
             String formatDateTime = localdatetime.format(format);
             
-            query = "INSERT INTO 'Transactions' (id, Date, Name, Haircut, Amount) VALUES('"+id+"', '"+formatDateTime+"', '"+t.getName()+"', '"+t.getHaircut()+"', '"+t.getAmount()+"')";
+            query = "INSERT INTO 'Transactions' (Date, Name, Haircut, Amount) VALUES('"+formatDateTime+"', '"+t.getName()+"', '"+t.getHaircut()+"', '"+t.getAmount()+"')";
             st = conn.prepareStatement(query);
             
             st.executeUpdate();

@@ -19,11 +19,44 @@ import java.util.Scanner;
  */
 public class Driver {
     public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        int userInput = 0;
         Connection conn = SQLiteConnect.getConnection();
         SQLiteTransactionManager sql = new SQLiteTransactionManager();
         
-        List<Transaction> tr = sql.viewTransactions();
+        do{
+            System.out.println("Which function do you want to do?");
+            System.out.println("[1] - View Transactions");
+            System.out.println("[2] - Add Transactions");
+            userInput = scan.nextInt();
+        }while(userInput != 1 && userInput != 2);
         
+        switch(userInput){
+            case 1: 
+                display();
+                break;
+            case 2:
+                Transaction t = getInput();
+                sql.addTransaction(t);
+                break;
+        }
+    }
+    
+    public static void display(){
+        Connection conn = SQLiteConnect.getConnection();
+        SQLiteTransactionManager sql = new SQLiteTransactionManager();             
+        
+        List<Transaction> tr = sql.viewTransactions(); 
+        
+        for(int i=0; i< tr.size(); i++){
+            System.out.print(tr.get(i).getDate() + " ");
+            System.out.print(tr.get(i).getName() + " ");
+            System.out.print(tr.get(i).getHaircut() + " ");
+            System.out.println(tr.get(i).getAmount());
+        }
+    }
+    
+    public static Transaction getInput() {   
         //gets input from the user for name and type of haircut and asks if customer is a PWD
         Scanner input = new Scanner(System.in);
             
@@ -34,18 +67,17 @@ public class Driver {
         System.out.println("Enter Type of Haircut[child/bangs/adult/senior]: ");
         String haircut = input.nextLine();
             
-        BigDecimal amount = null;
+        BigDecimal amount = new BigDecimal(0);
         BigDecimal PWDdiscount = new BigDecimal(0.8);
             
         if(isPWD.equalsIgnoreCase("y")){
             if(haircut.equalsIgnoreCase("child")){
-                amount = new BigDecimal(350);
-                amount = amount.multiply(PWDdiscount);
+                amount = new BigDecimal(300);                
                 haircut = "Child/PWD";
             } else if (haircut.equalsIgnoreCase("bangs")){
                 amount = new BigDecimal(175);
                 amount = amount.multiply(PWDdiscount);
-                haircut = "Child/Bangs";
+                haircut = "Child/Bangs/PWD";
             } else if (haircut.equalsIgnoreCase("adult")){
                 amount = new BigDecimal(170);
                 amount = amount.multiply(PWDdiscount);
@@ -66,15 +98,7 @@ public class Driver {
                 haircut = "Senior";
             }
         }
-        
         Transaction t = new Transaction(LocalDate.now(), name, haircut, amount);
-        sql.addTransaction(t);        
-        
-        for(int i=0; i< tr.size(); i++){
-            System.out.print(tr.get(i).getDate() + " ");
-            System.out.print(tr.get(i).getName() + " ");
-            System.out.print(tr.get(i).getHaircut() + " ");
-            System.out.println(tr.get(i).getAmount());
-        }
+        return t;
     }
 }
